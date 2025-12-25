@@ -1,0 +1,9 @@
+# Intentionally keeping tests separate
+test/
+
+*.ignore.*
+build/
+
+.vscode/
+.idea/
+.cache/

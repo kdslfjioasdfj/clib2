@@ -1,0 +1,23 @@
+---
+CompileFlags:
+  Add:
+    # Flags for Clang/GCC/other compilers
+    - -x
+    - c
+    - -Wall
+    - -Wextra
+    - -Wpedantic
+    - -Wshadow
+    - -Wuninitialized
+    - -Wvla
+    - -Wconversion
+    - -Wsign-conversion
+    - -Wpointer-arith
+    - -Wunused
+    - -Wnull-dereference
+    - -Wcast-align
+    - -Wstack-protector
+    - -Wfloat-equal
+    - -Wfloat-conversion
+    - -Werror
+    - -std=c11  # C11 standard
