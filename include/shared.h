@@ -4,9 +4,8 @@
  * @date 2025-12-26
  */
 
-#ifndef CLIB2_SHARED_H_INCLUDED // Unique include guard
-
-#define CLIB2_SHARED_H_INCLUDED
+#ifndef CLIB2_SHARED_H
+#define CLIB2_SHARED_H
 
 #ifdef _WIN32
 // On Windows, if building the library, use __declspec(dllexport), else
@@ -26,4 +25,4 @@
 #endif
 #endif
 
-#endif // CLIB2_SHARED_H_INCLUDED
+#endif // CLIB2_SHARED_H

@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 4.2)
 project(CLib2 LANGUAGES C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -34,8 +35,9 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
   )
 endif()
 
+file(GLOB TYPES "src/types/*.c")
 set(SRCS
-  # ...
+  ${TYPES}
 )
 
 add_library(CLib2Static STATIC ${SRCS})
