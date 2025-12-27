@@ -117,3 +117,46 @@ void *clib2_types_vector_getfast(clib2_types_vector_t *restrict vec,
     return NULL;
   return ((uint8_t *)(vec->mem)) + (idx * vec->elem_size);
 }
+
+bool clib2_types_vector_sort(clib2_types_vector_t *restrict vec,
+                             clib2_types_vector_cmp_t cmp) {
+  if (!vec || !cmp)
+    return false;
+
+  const size_t len = vec->len;
+  const size_t elem_size = vec->elem_size;
+
+  if (len < 2)
+    return true;
+
+  void *tmp = malloc(elem_size);
+  if (!tmp)
+    return false;
+
+  for (size_t i = 0; i < len - 1; ++i) {
+    size_t min_idx = i;
+
+    uint8_t *min_elem = (uint8_t *)vec->mem + (min_idx * elem_size);
+
+    for (size_t j = i + 1; j < len; ++j) {
+      uint8_t *cur = (uint8_t *)vec->mem + (j * elem_size);
+
+      if (cmp(cur, min_elem) == CLIB2_TYPES_VECTOR_CMPRES_LT) {
+        min_idx = j;
+        min_elem = cur;
+      }
+    }
+
+    if (min_idx != i) {
+      uint8_t *a = (uint8_t *)vec->mem + (i * elem_size);
+      uint8_t *b = (uint8_t *)vec->mem + (min_idx * elem_size);
+
+      memcpy(tmp, a, elem_size);
+      memcpy(a, b, elem_size);
+      memcpy(b, tmp, elem_size);
+    }
+  }
+
+  free(tmp);
+  return true;
+}

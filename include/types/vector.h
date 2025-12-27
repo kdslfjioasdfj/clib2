@@ -18,6 +18,28 @@
 typedef struct clib2_types_vector_s clib2_types_vector_t;
 
 /**
+ * @brief The result of a comparision between 2 elements in a vector. Used for
+ * sorting the vector.
+ */
+typedef enum clib2_types_vector_cmpres_e {
+  CLIB2_TYPES_VECTOR_CMPRES_EQ = 0, ///< Equality between 2 elements
+  CLIB2_TYPES_VECTOR_CMPRES_GT = 1, ///< The first element is greater
+  CLIB2_TYPES_VECTOR_CMPRES_LT = 2, ///< The first element is lesser
+} clib2_types_vector_cmpres_t;
+
+/**
+ * @brief A comparison between 2 items in an array
+ * @param a The first operand
+ * @param b The second operand
+ * @details This function is used to compare to elements of an array
+ *          It returns CLIB2_TYPES_VECTOR_CMPRES_EQ if both are equal
+ *          It returns CLIB2_TYPES_VECTOR_CMPRES_GT if @p a is greater
+ *          It return CLIB2_TYPES_VECTOR_CMPRES_LT if @p a is lesser
+ */
+typedef clib2_types_vector_cmpres_t (*clib2_types_vector_cmp_t)(
+    const void *const a, const void *const b);
+
+/**
  * @brief Initialize a vector
  * @param elem_size The size of each element
  * @param initial_len The initial amount of elements
@@ -107,5 +129,15 @@ clib2_types_vector_resize(clib2_types_vector_t *restrict vec, size_t size);
  */
 CLIB2_SHARED_PUBLIC void *
 clib2_types_vector_getfast(clib2_types_vector_t *restrict vec, size_t idx);
+
+/**
+ * @brief Sort a vector into ascending order
+ * @param vec The vector to sort
+ * @param cmp The comparison callback
+ * @return The success of the operation
+ */
+CLIB2_SHARED_PUBLIC bool
+clib2_types_vector_sort(clib2_types_vector_t *restrict vec,
+                        clib2_types_vector_cmp_t cmp);
 
 #endif // CLIB2_TYPES_VECTOR_H
