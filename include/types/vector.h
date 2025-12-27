@@ -45,7 +45,7 @@ clib2_types_vector_elemsize(const clib2_types_vector_t *restrict const vec);
  * @brief Set an element in a vector
  * @param vec The vector to set into
  * @param data The data to copy bytes from. Copies in
- * clib2_types_vector_elemsize( \p vec ) bytes from \p data into the array
+ * clib2_types_vector_elemsize( @p vec ) bytes from @p data into the array
  * @param idx The index to set to
  * @return The success of the operation
  */
@@ -57,7 +57,7 @@ clib2_types_vector_set(clib2_types_vector_t *restrict vec,
  * @brief Get an element in a vector
  * @param vec The vector to fetch from
  * @param out The output buffer to copy the data into. Copies up to
- * clib2_types_vector_elemsize( \p vec ) bytes into \p out
+ * clib2_types_vector_elemsize( @p vec ) bytes into @p out
  * @param idx The index to read
  * @return The success of the operation
  */
@@ -77,8 +77,8 @@ clib2_types_vector_len(const clib2_types_vector_t *restrict const vec);
  * @brief Push an element onto an array
  * @param vec The vector to push onto
  * @param in The data to copy into the new element. Leaving it as NULL leaves
- * the data uninitialized. Copies up to clib2_types_vector_elemsize( \p vec )
- * bytes from \p in
+ * the data uninitialized. Copies up to clib2_types_vector_elemsize( @p vec )
+ * bytes from @p in
  * @return The success of the operation
  */
 CLIB2_SHARED_PUBLIC bool
@@ -86,11 +86,11 @@ clib2_types_vector_push(clib2_types_vector_t *restrict vec,
                         const void *const restrict in);
 
 /**
- * @brief Resize the vector so it has exactly \p size elements
+ * @brief Resize the vector so it has exactly @p size elements
  * @param vec The vector to resize
  * @param size The amount of elements to have. If higher, allocates new,
  * uninitialized elements, if smaller, discards excess elements and if equal,
- * effective no-op. If \p size == 0, then effective no-op.
+ * effective no-op. If @p size == 0, then effective no-op.
  * @return CLIB2_SHARED_PUBLIC
  */
 CLIB2_SHARED_PUBLIC bool

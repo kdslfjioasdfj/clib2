@@ -43,7 +43,7 @@ clib2_types_stack_elemsize(const clib2_types_stack_t *restrict const stack);
  * @brief Push data to the stack
  * @param stack The stack to push an element onto
  * @param in The data to copy into the new element. Copies in about
- * clib2_types_stack_elemsize( \p stack ) bytes into the stack from \p in
+ * clib2_types_stack_elemsize( @p stack ) bytes into the stack from @p in
  * @return The success of the operation
  */
 CLIB2_SHARED_PUBLIC bool
@@ -62,7 +62,7 @@ clib2_types_stack_pop(clib2_types_stack_t *restrict stack);
  * @brief Peek on the top element of a stack
  * @param stack The stack to peek data from
  * @param out The out pointer to write into. Copies in upto
- * clib2_types_stack_elemsize( \p stack ) bytes into \p out
+ * clib2_types_stack_elemsize( @p stack ) bytes into @p out
  * @return The success of the operation
  */
 CLIB2_SHARED_PUBLIC bool
