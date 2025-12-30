@@ -36,8 +36,10 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
 endif()
 
 file(GLOB TYPES "src/types/*.c")
+file(GLOB_RECURSE UTILS "src/utils/*.c")
 set(SRCS
   ${TYPES}
+  ${UTILS}
 )
 
 add_library(CLib2Static STATIC ${SRCS})
