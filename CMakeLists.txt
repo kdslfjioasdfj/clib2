@@ -37,9 +37,11 @@ endif()
 
 file(GLOB TYPES "src/types/*.c")
 file(GLOB_RECURSE UTILS "src/utils/*.c")
+file(GLOB CRYPTO "src/crypto/*.c")
 set(SRCS
   ${TYPES}
   ${UTILS}
+  ${CRYPTO}
 )
 
 add_library(CLib2Static STATIC ${SRCS})
