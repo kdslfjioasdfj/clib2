@@ -1,6 +1,3 @@
-# Intentionally keeping tests separate
-test/
-
 *.ignore.*
 build/
 
