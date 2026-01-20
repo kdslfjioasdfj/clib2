@@ -2,7 +2,8 @@
  * @file shared.h
  * @brief Internal Header: DO NOT USE
  * @warning None of this is part of the API and is not intended for public usage
- * @note This module may not be documented fully because it is not meant for public usage
+ * @note This module may not be documented fully because it is not meant for
+ * public usage
  * @date 2025-12-26
  */
 
@@ -35,7 +36,7 @@
 #define CLIB2_SHARED_DEPREC(MSG) __attribute__((deprecated(MSG)))
 #else
 #define CLIB2_SHARED_DEPREC(MSG) /* No special treatment */
-#endif // __GNUC__ || __clang__
-#endif // _WIN32
+#endif                           // __GNUC__ || __clang__
+#endif                           // _WIN32
 
 #endif // CLIB2_SHARED_H
