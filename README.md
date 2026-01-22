@@ -18,7 +18,7 @@ The original version had design and usability issues.
 
 ### 1. Clone the repo
 ```bash
-git clone git@github.com:YOUR_USERNAME/clib2.git
+git clone https://github.com/kdslfjioasdfj/clib2
 cd clib2
 ```
 ### 2. Build with CMake
