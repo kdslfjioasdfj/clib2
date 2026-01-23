@@ -19,7 +19,7 @@ I made a few important design choices while making **CLib2**.
 Here are the most important ones:
 1. *Cross-Platform support*: I try my best to avoid platform-specific code. I also support embedded devices (by using as little memory as possible)!
 2. *Simplicity*: I try my best to keep APIs simple, consistent, readable, and most importantly, understandable.
-3. *Deterministic*: I try to keep the library as deterministic as possible: for the same outputs, you get the same inputs.
+3. *Deterministic*: I try to keep the library as deterministic as possible: for the same inputs, you get the same outputs.
 4. *Safe*: The library is safe: I avoid **Undefined Behavior** as much as possible. Most APIs make invalid state impossible.
 5. *Opaque*: The internals of the library are opaque, even if the code is Open-Source. You don't need to worry about low-level problems!
 
