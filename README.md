@@ -43,6 +43,21 @@ Here are some notes on this step that might help:
 1. You might want to check the `CMakeLists.txt` in the project directory and customize it!
 2. The build config does not (yet) support running tests. You'll need to compile and link those separately!
 3. The config (by default) already handles for a static AND dynamic library at the same time.
+### 3. See documentation
+**CLib2** uses **Doxygen** to generate documentation.
+1. Ensure `doxygen` is installed.
+2. Run the command:
+```bash
+doxygen Doxyfile
+```
+3. The HTML documentation is generated in `docs.ignore.dir/html/`.
+
+---
+
+## License
+**CLib2** is released under the MIT license. See the `LICENSE` file in the project directory for more details.
+
+---
 
 ## Contributing
 Not open for contributions just yet — it’s just me for now.
