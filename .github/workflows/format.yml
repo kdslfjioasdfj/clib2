@@ -1,0 +1,19 @@
+name: C Code Formatting Check
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential clang-format
+      - name: Check formatting
+        run: |
+          clang-format -style=file -n $(find include src -iname "*.c" -o -iname "*.h")
