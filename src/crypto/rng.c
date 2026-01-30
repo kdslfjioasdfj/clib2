@@ -2,8 +2,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-static const uint64_t non0const = 0xC0015EDF00D53141;
-
 struct clib2_crypto_rng_s {
   uint64_t upper;
   uint64_t lower;
@@ -15,17 +13,15 @@ static uint32_t next(uint64_t *upper, uint64_t *lower) {
   if (!upper || !lower)
     return 1;
 
-  uint64_t s0 = (*upper) ? *upper : non0const;
-  uint64_t s1 = (*lower) ? *lower : non0const;
+  uint64_t s0 = *upper;
+  uint64_t s1 = *lower;
 
   *upper = s1;
   s1 ^= s1 << 23;
   s1 ^= s0 ^ (s1 >> 17) ^ (s0 >> 26);
   *lower = s1;
 
-  // The return is a bit different from normal XorShift128+.
-  // This shouldn't hurt XorShift128+'s benefits, just differentiate.
-  return (~((uint32_t)((s0 + s1) & UINT32_MAX)));
+  return (((uint32_t)((s0 + s1) & UINT32_MAX)));
 }
 
 clib2_crypto_rng_t *clib2_crypto_rng_init(uint64_t seed1, uint64_t seed2) {
@@ -57,7 +53,7 @@ void clib2_crypto_rng_next(clib2_crypto_rng_t *restrict rng) {
 
 int32_t
 clib2_crypto_rng_yield_i32(const clib2_crypto_rng_t *restrict const rng) {
-  // 0 is not valid RNG but how is the user supposed to know that?
+  // I know this is valid but it is unavoidable
   if (!rng)
     return 0;
 
@@ -66,7 +62,7 @@ clib2_crypto_rng_yield_i32(const clib2_crypto_rng_t *restrict const rng) {
 
 uint32_t
 clib2_crypto_rng_yield_u32(const clib2_crypto_rng_t *restrict const rng) {
-  // 0 is not valid RNG but how is the user supposed to know that?
+  // I know this is valid but it is unavoidable
   if (!rng)
     return 0;
 
