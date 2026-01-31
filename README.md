@@ -51,6 +51,11 @@ Here are some notes on this step that might help:
 doxygen Doxyfile
 ```
 3. The HTML documentation is generated in `docs.ignore.dir/html/`.
+### 4. Check out the examples
+There are small examples for each module in `examples/`.
+They're small programs you need to compile yourself.
+Instead of running these programs to see their effects, I suggest you read their
+code and run then afterward.
 
 ---
 
