@@ -44,6 +44,7 @@ typedef clib2_types_vector_cmpres_t (*clib2_types_vector_cmp_t)(
  * @param elem_size The size of each element
  * @param initial_len The initial amount of elements
  * @return The pointer to the array
+ * @note initial_len can not be 0
  */
 CLIB2_SHARED_PUBLIC clib2_types_vector_t *
 clib2_types_vector_init(size_t elem_size, size_t initial_len);
@@ -82,6 +83,8 @@ clib2_types_vector_set(clib2_types_vector_t *restrict vec,
  * clib2_types_vector_elemsize( @p vec ) bytes into @p out
  * @param idx The index to read
  * @return The success of the operation
+ * @warning If the memory at @p idx was not set before, the function reads into
+ * uninitialized memory. To set the memory, set it with clib2_types_vector_set.
  */
 CLIB2_SHARED_PUBLIC bool
 clib2_types_vector_get(const clib2_types_vector_t *restrict const vec,
@@ -91,6 +94,7 @@ clib2_types_vector_get(const clib2_types_vector_t *restrict const vec,
  * @brief Get the length (total element count) of a vector
  * @param vec The vector to fetch from
  * @return The length of the vector
+ * @note Since the vector's length can never be 0, 0 is used as an error value
  */
 CLIB2_SHARED_PUBLIC size_t
 clib2_types_vector_len(const clib2_types_vector_t *restrict const vec);
@@ -110,25 +114,16 @@ clib2_types_vector_push(clib2_types_vector_t *restrict vec,
 /**
  * @brief Resize the vector so it has exactly @p size elements
  * @param vec The vector to resize
- * @param size The amount of elements to have. If higher, allocates new,
- * uninitialized elements, if smaller, discards excess elements and if equal,
- * effective no-op. If @p size == 0, then effective no-op.
+ * @param size The amount of accessible elements to have.
+ * If it is higher, it allocates new elements and leaves them uninitialized.
+ * If it is lower, it decreases the amount of elements (may remove existing
+ * elements without notice).
+ * If it is the same, it does nothing.
+ * If it is 0, it returns an error and does nothing.
  * @return CLIB2_SHARED_PUBLIC
  */
 CLIB2_SHARED_PUBLIC bool
 clib2_types_vector_resize(clib2_types_vector_t *restrict vec, size_t size);
-
-/**
- * @brief Quickly get an element from the vector
- * @param vec The vector to fetch from
- * @param idx The index to fetch
- * @return A pointer to the start of the item
- * @details Returns a pointer directly from the vector's memory backing.
- * Modification of this could edit data from the vector's owned memory.
- * @note Always prefer clib2_types_vector_get if not performance-critical
- */
-CLIB2_SHARED_PUBLIC void *
-clib2_types_vector_getfast(clib2_types_vector_t *restrict vec, size_t idx);
 
 /**
  * @brief Sort a vector into ascending order
