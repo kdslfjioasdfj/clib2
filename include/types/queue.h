@@ -20,6 +20,7 @@ typedef struct clib2_types_queue_s clib2_types_queue_t;
  * @brief Intialize a queue
  * @param elem_size The size of each element in the queue. Is referred to later.
  * @return A pointer to the queue
+ * @note If @p elem_size == 0, the function returns NULL
  */
 CLIB2_SHARED_PUBLIC clib2_types_queue_t *
 clib2_types_queue_init(size_t elem_size);
@@ -35,6 +36,7 @@ clib2_types_queue_free(clib2_types_queue_t *restrict *restrict queue);
  * @brief Get the size of each element in a queue
  * @param queue The queue to fetch from
  * @return The size of each element in the queue
+ * @note Since 0 is not a valid element size, 0 is an error value
  */
 CLIB2_SHARED_PUBLIC size_t
 clib2_types_queue_elemsize(clib2_types_queue_t *restrict const queue);
@@ -73,6 +75,8 @@ clib2_types_queue_peek(const clib2_types_queue_t *restrict const queue,
  * @brief Get the length (amount of elements) in a queue
  * @param queue The queue to fetch from
  * @return The length of a queue
+ * @note If @p queue is NULL, the function will return 0. 0 may also be a valid
+ * length, so check if @p queue is valid before running.
  */
 CLIB2_SHARED_PUBLIC size_t
 clib2_types_queue_len(const clib2_types_queue_t *restrict const queue);
