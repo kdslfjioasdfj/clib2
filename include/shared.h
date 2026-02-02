@@ -10,6 +10,10 @@
 #ifndef CLIB2_SHARED_H
 #define CLIB2_SHARED_H
 
+#include <inttypes.h>
+#include <stdbool.h>
+#include <stddef.h>
+
 #ifdef _WIN32
 // On Windows, if building the library, use __declspec(dllexport), else
 // __declspec(dllimport)
@@ -38,5 +42,23 @@
 #define CLIB2_SHARED_DEPREC(MSG) /* No special treatment */
 #endif                           // __GNUC__ || __clang__
 #endif                           // _WIN32
+
+// I got feedback saying my API could overflow, so I added this:
+/*
+ * If no overflow: *out = a * b
+ * If overflow exists: *out = SIZE_MAX
+ */
+static inline bool mul_overflow(size_t a, size_t b, size_t *restrict out) {
+  if (!a || !b) {
+    *out = 0;
+    return false;
+  }
+  if (a > SIZE_MAX / b) {
+    *out = SIZE_MAX; // I want *out's value to be known in all paths
+    return true;
+  }
+  *out = a * b;
+  return false;
+}
 
 #endif // CLIB2_SHARED_H

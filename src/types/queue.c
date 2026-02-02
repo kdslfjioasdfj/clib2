@@ -1,27 +1,10 @@
 #include "../../include/types/queue.h"
+#include "../../include/shared.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-
-// I got feedback saying my API could overflow, so I added this:
-/*
- * If no overflow: *out = a * b
- * If overflow exists: *out = SIZE_MAX
- */
-static inline bool mul_overflow(size_t a, size_t b, size_t *restrict out) {
-  if (!a || !b) {
-    *out = 0;
-    return false;
-  }
-  if (a > SIZE_MAX / b) {
-    *out = SIZE_MAX; // I want *out's value to be known in all paths
-    return true;
-  }
-  *out = a * b;
-  return false;
-}
 
 struct clib2_types_queue_s {
   void *mem;        // Backing memory of the queue

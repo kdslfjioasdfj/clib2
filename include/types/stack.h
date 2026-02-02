@@ -35,6 +35,7 @@ clib2_types_stack_free(clib2_types_stack_t *restrict *restrict stack);
  * @brief Fetch the size of each element in a stack
  * @param stack The stack to fetch size from
  * @return The size of the stack
+ * @note Since 0 is never a valid element size, it is used as an error value
  */
 CLIB2_SHARED_PUBLIC size_t
 clib2_types_stack_elemsize(const clib2_types_stack_t *restrict const stack);
@@ -54,6 +55,8 @@ clib2_types_stack_push(clib2_types_stack_t *restrict stack,
  * @brief Pop the top element of a stack
  * @param stack The stack to pop data from
  * @return The success of the operation
+ * @note If (clib2_types_stack_height( @p stack ) == 0), the stack is unchanged
+ * and the function fails safely.
  */
 CLIB2_SHARED_PUBLIC bool
 clib2_types_stack_pop(clib2_types_stack_t *restrict stack);
@@ -64,6 +67,7 @@ clib2_types_stack_pop(clib2_types_stack_t *restrict stack);
  * @param out The out pointer to write into. Copies in upto
  * clib2_types_stack_elemsize( @p stack ) bytes into @p out
  * @return The success of the operation
+ * @note On failure, out AND stack are unchanged
  */
 CLIB2_SHARED_PUBLIC bool
 clib2_types_stack_peek(const clib2_types_stack_t *restrict const stack,
@@ -73,6 +77,12 @@ clib2_types_stack_peek(const clib2_types_stack_t *restrict const stack,
  * @brief Get the height (length) of a stack
  * @param stack The stack to fetch from
  * @return The height of the stack
+ * @note Check if the stack is valid before using this:
+ * If an invalid stack (NULL) is given, this function returns 0
+ * If an empty stack is given, this function returns 0
+ * Returned 0 is ambiguous until you know that the stack is valid.
+ * Correct empty stack check:
+ * ( @p stack && clib2_types_stack_height( @p stack ))
  */
 CLIB2_SHARED_PUBLIC size_t
 clib2_types_stack_height(const clib2_types_stack_t *restrict const stack);

@@ -1,4 +1,5 @@
 #include "../../include/types/vector.h"
+#include "../../include/shared.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -11,24 +12,6 @@ struct clib2_types_vector_s {
   size_t cap;       // Total capacity
   size_t elem_size; // Size of each element
 };
-
-// I got feedback saying my API could overflow, so I added this:
-/*
- * If no overflow: *out = a * b
- * If overflow exists: *out = SIZE_MAX
- */
-static inline bool mul_overflow(size_t a, size_t b, size_t *restrict out) {
-  if (!a || !b) {
-    *out = 0;
-    return false;
-  }
-  if (a > SIZE_MAX / b) {
-    *out = SIZE_MAX; // I want *out's value to be known in all paths
-    return true;
-  }
-  *out = a * b;
-  return false;
-}
 
 clib2_types_vector_t *clib2_types_vector_init(size_t elem_size,
                                               size_t initial_len) {
