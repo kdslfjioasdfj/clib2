@@ -43,7 +43,7 @@ static bool queue_grow(clib2_types_queue_t *queue) {
       return false;
     }
 
-    memcpy((char *)new_mem + dst_offset, (char *)queue->mem + src_offset,
+    memcpy((uint8_t *)new_mem + dst_offset, (uint8_t *)queue->mem + src_offset,
            queue->elem_size);
   }
 
@@ -105,7 +105,7 @@ bool clib2_types_queue_enqueue(clib2_types_queue_t *restrict queue,
   if (mul_overflow(queue->tail, queue->elem_size, &offset))
     return false;
 
-  memcpy((char *)queue->mem + offset, in, queue->elem_size);
+  memcpy((uint8_t *)queue->mem + offset, in, queue->elem_size);
 
   queue->tail = (queue->tail + 1) % queue->capacity;
   queue->used++;
@@ -132,7 +132,7 @@ bool clib2_types_queue_peek(const clib2_types_queue_t *restrict const queue,
   if (mul_overflow(queue->head, queue->elem_size, &offset))
     return false;
 
-  memcpy(out, (char *)queue->mem + offset, queue->elem_size);
+  memcpy(out, (uint8_t *)queue->mem + offset, queue->elem_size);
   return true;
 }
 
