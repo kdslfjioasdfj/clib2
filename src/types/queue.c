@@ -17,11 +17,11 @@ struct clib2_types_queue_s {
 
 static bool queue_grow(clib2_types_queue_t *queue) {
   size_t new_capacity;
-  if (mul_overflow(queue->capacity, 2, &new_capacity))
+  if (clib2_shared_mul_overflow_size_t(queue->capacity, 2, &new_capacity))
     return false;
 
   size_t new_bytes;
-  if (mul_overflow(new_capacity, queue->elem_size, &new_bytes))
+  if (clib2_shared_mul_overflow_size_t(new_capacity, queue->elem_size, &new_bytes))
     return false;
 
   void *new_mem = malloc(new_bytes);
@@ -32,13 +32,13 @@ static bool queue_grow(clib2_types_queue_t *queue) {
     size_t src_index = (queue->head + i) % queue->capacity;
 
     size_t src_offset;
-    if (mul_overflow(src_index, queue->elem_size, &src_offset)) {
+    if (clib2_shared_mul_overflow_size_t(src_index, queue->elem_size, &src_offset)) {
       free(new_mem);
       return false;
     }
 
     size_t dst_offset;
-    if (mul_overflow(i, queue->elem_size, &dst_offset)) {
+    if (clib2_shared_mul_overflow_size_t(i, queue->elem_size, &dst_offset)) {
       free(new_mem);
       return false;
     }
@@ -102,7 +102,7 @@ bool clib2_types_queue_enqueue(clib2_types_queue_t *restrict queue,
   }
 
   size_t offset;
-  if (mul_overflow(queue->tail, queue->elem_size, &offset))
+  if (clib2_shared_mul_overflow_size_t(queue->tail, queue->elem_size, &offset))
     return false;
 
   memcpy((uint8_t *)queue->mem + offset, in, queue->elem_size);
@@ -129,7 +129,7 @@ bool clib2_types_queue_peek(const clib2_types_queue_t *restrict const queue,
     return false;
 
   size_t offset;
-  if (mul_overflow(queue->head, queue->elem_size, &offset))
+  if (clib2_shared_mul_overflow_size_t(queue->head, queue->elem_size, &offset))
     return false;
 
   memcpy(out, (uint8_t *)queue->mem + offset, queue->elem_size);

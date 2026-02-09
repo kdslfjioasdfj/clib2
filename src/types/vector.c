@@ -21,7 +21,7 @@ clib2_types_vector_t *clib2_types_vector_init(size_t elem_size,
   if (!vec)
     return NULL;
   size_t bytes_needed;
-  if (mul_overflow(elem_size, initial_len, &bytes_needed))
+  if (clib2_shared_mul_overflow_size_t(elem_size, initial_len, &bytes_needed))
     // elem_size * initial_len is an overflow
     return NULL;
   vec->mem = malloc(bytes_needed);
@@ -60,7 +60,7 @@ bool clib2_types_vector_set(clib2_types_vector_t *restrict vec,
     return false;
 
   size_t pos;
-  if (mul_overflow(idx, vec->elem_size, &pos))
+  if (clib2_shared_mul_overflow_size_t(idx, vec->elem_size, &pos))
     return false; // The vector was NOT changed
   memcpy(((uint8_t *)(vec->mem)) + pos, data, vec->elem_size);
 
@@ -74,7 +74,7 @@ bool clib2_types_vector_get(const clib2_types_vector_t *restrict const vec,
     return false;
 
   size_t pos;
-  if (mul_overflow(idx, vec->elem_size, &pos))
+  if (clib2_shared_mul_overflow_size_t(idx, vec->elem_size, &pos))
     return false; // The vector was NOT changed
   memcpy(out, ((uint8_t *)(vec->mem)) + pos, vec->elem_size);
 
@@ -95,7 +95,7 @@ bool clib2_types_vector_push(clib2_types_vector_t *restrict vec,
   if (vec->cap > vec->len) {
     if (in) {
       size_t pos;
-      if (mul_overflow(vec->elem_size, vec->len, &pos))
+      if (clib2_shared_mul_overflow_size_t(vec->elem_size, vec->len, &pos))
         return false; // The vector was NOT changed
       memcpy(((uint8_t *)(vec->mem)) + pos, in, vec->elem_size);
     }
@@ -103,8 +103,8 @@ bool clib2_types_vector_push(clib2_types_vector_t *restrict vec,
   } else {
     size_t new_cap;      // Ideally vec->cap * 2
     size_t desired_size; // Ideally new_cap * vec->elem_size
-    if (mul_overflow(vec->cap, 2, &new_cap) ||
-        mul_overflow(new_cap, vec->elem_size, &desired_size))
+    if (clib2_shared_mul_overflow_size_t(vec->cap, 2, &new_cap) ||
+        clib2_shared_mul_overflow_size_t(new_cap, vec->elem_size, &desired_size))
       // NOTE: Both new_cap and desired_size should be initialized now
       return false; // The vector was NOT changed
     // Now, actually try to resize:
@@ -135,7 +135,7 @@ bool clib2_types_vector_resize(clib2_types_vector_t *restrict vec,
     return true;
   }
   size_t desired_size;
-  if (mul_overflow(size, vec->elem_size, &desired_size))
+  if (clib2_shared_mul_overflow_size_t(size, vec->elem_size, &desired_size))
     return false; // The vector was NOT changed
   void *new_mem = realloc(vec->mem, desired_size);
   if (!new_mem)

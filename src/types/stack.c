@@ -53,10 +53,10 @@ bool clib2_types_stack_push(clib2_types_stack_t *restrict stack,
   // Double size if space runs out
   if (stack->used == stack->cap) {
     size_t new_cap;
-    if (mul_overflow(2, stack->cap, &new_cap))
+    if (clib2_shared_mul_overflow_size_t(2, stack->cap, &new_cap))
       return false; // The stack was NOT changed
     size_t desired_bytes;
-    if (mul_overflow(new_cap, stack->elem_size, &desired_bytes))
+    if (clib2_shared_mul_overflow_size_t(new_cap, stack->elem_size, &desired_bytes))
       return false; // The stack was NOT changed
     void *new_mem = realloc(stack->mem, desired_bytes);
     if (!new_mem)

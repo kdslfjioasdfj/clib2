@@ -48,7 +48,7 @@
  * If no overflow: *out = a * b
  * If overflow exists: *out = SIZE_MAX
  */
-static inline bool mul_overflow(size_t a, size_t b, size_t *restrict out) {
+static inline bool clib2_shared_mul_overflow_size_t(size_t a, size_t b, size_t *restrict out) {
   if (!a || !b) {
     *out = 0;
     return false;
