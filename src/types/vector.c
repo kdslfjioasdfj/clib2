@@ -21,9 +21,10 @@ clib2_types_vector_t *clib2_types_vector_init(size_t elem_size,
   if (!vec)
     return NULL;
   size_t bytes_needed;
-  if (clib2_shared_mul_overflow_size_t(elem_size, initial_len, &bytes_needed))
-    // elem_size * initial_len is an overflow
+  if (clib2_shared_mul_overflow_size_t(elem_size, initial_len, &bytes_needed)) {
+    free(vec);
     return NULL;
+  }
   vec->mem = malloc(bytes_needed);
   if (!(vec->mem)) {
     // Could not obtain backing memory
@@ -104,7 +105,8 @@ bool clib2_types_vector_push(clib2_types_vector_t *restrict vec,
     size_t new_cap;      // Ideally vec->cap * 2
     size_t desired_size; // Ideally new_cap * vec->elem_size
     if (clib2_shared_mul_overflow_size_t(vec->cap, 2, &new_cap) ||
-        clib2_shared_mul_overflow_size_t(new_cap, vec->elem_size, &desired_size))
+        clib2_shared_mul_overflow_size_t(new_cap, vec->elem_size,
+                                         &desired_size))
       // NOTE: Both new_cap and desired_size should be initialized now
       return false; // The vector was NOT changed
     // Now, actually try to resize:

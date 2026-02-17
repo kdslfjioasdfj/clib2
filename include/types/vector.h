@@ -18,7 +18,7 @@
 typedef struct clib2_types_vector_s clib2_types_vector_t;
 
 /**
- * @brief The result of a comparision between 2 elements in a vector. Used for
+ * @brief The result of a comparison between 2 elements in a vector. Used for
  * sorting the vector.
  */
 typedef enum clib2_types_vector_cmpres_e {
@@ -34,7 +34,7 @@ typedef enum clib2_types_vector_cmpres_e {
  * @details This function is used to compare to elements of an array
  *          It returns CLIB2_TYPES_VECTOR_CMPRES_EQ if both are equal
  *          It returns CLIB2_TYPES_VECTOR_CMPRES_GT if @p a is greater
- *          It return CLIB2_TYPES_VECTOR_CMPRES_LT if @p a is lesser
+ *          It returns CLIB2_TYPES_VECTOR_CMPRES_LT if @p a is lesser
  */
 typedef clib2_types_vector_cmpres_t (*clib2_types_vector_cmp_t)(
     const void *const a, const void *const b);
@@ -42,7 +42,8 @@ typedef clib2_types_vector_cmpres_t (*clib2_types_vector_cmp_t)(
 /**
  * @brief Initialize a vector
  * @param elem_size The size of each element
- * @param initial_len The initial amount of elements
+ * @param initial_len The initial amount of elements to guarantee existence of.
+ * Length may be shown as 0.
  * @return The pointer to the array
  * @note initial_len can not be 0
  */
@@ -94,7 +95,7 @@ clib2_types_vector_get(const clib2_types_vector_t *restrict const vec,
  * @brief Get the length (total element count) of a vector
  * @param vec The vector to fetch from
  * @return The length of the vector
- * @note Since the vector's length can never be 0, 0 is used as an error value
+ * @note 0 is ambiguous. If @p vec == NULL, the function returns 0.
  */
 CLIB2_SHARED_PUBLIC size_t
 clib2_types_vector_len(const clib2_types_vector_t *restrict const vec);
@@ -120,7 +121,7 @@ clib2_types_vector_push(clib2_types_vector_t *restrict vec,
  * elements without notice).
  * If it is the same, it does nothing.
  * If it is 0, it returns an error and does nothing.
- * @return CLIB2_SHARED_PUBLIC
+ * @return The success of the operation
  */
 CLIB2_SHARED_PUBLIC bool
 clib2_types_vector_resize(clib2_types_vector_t *restrict vec, size_t size);
