@@ -23,8 +23,7 @@ typedef enum clib2_utils_io_logger_level_e {
 typedef enum clib2_utils_io_logger_result_e {
   CLIB2_UTILS_IO_LOGGER_RESULT_SUCCESS = 0, ///< Successful log write
   CLIB2_UTILS_IO_LOGGER_RESULT_INVALID = 1, ///< Recieved invalid parameter
-  CLIB2_UTILS_IO_LOGGER_RESULT_MEM = 2, ///< Could not allocate internal buffer
-  CLIB2_UTILS_IO_LOGGER_RESULT_WRITE = 3, ///< Failure in write
+  CLIB2_UTILS_IO_LOGGER_RESULT_WRITE = 3,   ///< Failure in write
 } clib2_utils_io_logger_result_t;
 
 /**
