@@ -1,0 +1,9 @@
+/**
+ * @file mainpage.dox
+ * @brief The main page of the CLib2 documentation
+ * @date 2026-02-20
+ *
+ * @mainpage
+ *
+ * See: @ref disclaimers "disclaimers" about CLib2.
+ */

@@ -1,0 +1,13 @@
+/**
+ * @file disclaimers.dox
+ * @brief Disclaimers about CLib2
+ * @date 2026-02-20
+ * @page disclaimers Disclaimers
+ *
+ * @section Thread Safety
+ * @warning CLib2 is NOT thread-safe by default.
+ * Assume that CLib2 is not thread-safe unless explicitly stated otherwise.
+ * You can safely assume that a module is reentrant (no global or static local state)
+ * but not thread-safe (synchronization is handled by the caller) unless explicitly stated
+ * otherwise.
+ */
