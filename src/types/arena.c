@@ -10,15 +10,6 @@ struct clib2_types_arena_s {
   size_t used;
 };
 
-static inline size_t align_offset(size_t wanted, size_t align_by) {
-  if (align_by <= 1)
-    return 0; // No alignment needed
-
-  size_t aligned_size = (wanted + align_by - 1) / align_by * align_by;
-  return aligned_size -
-         wanted; // How much we need to round up to reach aligned_size
-}
-
 clib2_types_arena_t *clib2_types_arena_init(size_t sz, size_t align,
                                             bool zeroed) {
   if (!sz)
@@ -54,21 +45,25 @@ void clib2_types_arena_destroy(clib2_types_arena_t *restrict *restrict arena) {
 void *clib2_types_arena_alloc(clib2_types_arena_t *restrict arena, size_t sz) {
   if (!sz || !arena)
     return NULL;
-
-  // Calculate how much we need to round up the size for alignment
-  size_t offset = align_offset(sz, arena->align_by);
-
-  // Check if there’s enough space in the arena
-  if ((sz + offset) > (arena->total_size - arena->used))
+  uintptr_t cur_addr = (uintptr_t)arena->mem + arena->used;
+  size_t offset = 0;
+  if (arena->align_by > 1) {
+    size_t rem = cur_addr % arena->align_by;
+    if (rem != 0)
+      offset = arena->align_by - rem;
+  } else {
+    // arena->align_by is 1 or 0, ignore alignment
+    if (sz > arena->total_size - arena->used)
+      return NULL;
+    void *ptr = (uint8_t *)arena->mem + arena->used;
+    arena->used += sz;
+    return ptr;
+  }
+  if (sz + offset > arena->total_size - arena->used)
     return NULL;
-
-  // The next available pointer, accounting for the alignment offset
-  void *next = ((uint8_t *)(arena->mem)) + arena->used + offset;
-
-  // Update arena usage to include the size and the offset
+  void *ptr = (uint8_t *)arena->mem + arena->used + offset;
   arena->used += sz + offset;
-
-  return next;
+  return ptr;
 }
 
 void clib2_types_arena_reset(clib2_types_arena_t *restrict arena) {

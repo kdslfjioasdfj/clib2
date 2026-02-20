@@ -21,6 +21,9 @@ typedef struct clib2_types_arena_s clib2_types_arena_t;
  * @param sz The size of the arena
  * @param align The alignment to be followed
  * @param zeroed Whether the memory should be zeroed out ONCE at initialization
+ * @return The pointer to the arena
+ * @note If @p align == 0 || @p align == 1, the allocations do not follow any
+ * alignment and might cause improper alignment.
  */
 CLIB2_SHARED_PUBLIC clib2_types_arena_t *
 clib2_types_arena_init(size_t sz, size_t align, bool zeroed);
