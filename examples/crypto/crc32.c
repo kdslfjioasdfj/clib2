@@ -1,64 +1,103 @@
 #include "../../include/crypto/crc32.h"
 #include <inttypes.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-void *read_full_file(FILE *restrict f, size_t *restrict out) {
-  if (!f || !out)
-    return NULL;
-
-  long pos = ftell(f);
-  if (pos == -1L)
-    return NULL;
-
-  if (fseek(f, 0, SEEK_END) != 0)
-    return NULL;
-  long len = ftell(f);
-  if (len == -1L)
-    return NULL;
-
-  if (fseek(f, 0, SEEK_SET) != 0)
-    return NULL;
-
-  void *buf = malloc((size_t)len);
-  if (!buf)
-    return NULL;
-
-  size_t read = fread(buf, 1, (size_t)len, f);
-  if (read != (size_t)len) {
-    free(buf);
-    return NULL;
-  }
-
-  *out = (size_t)len;
-  return buf;
-}
+#define CHUNK_SIZE 1024 // 1 KB
 
 int main(int argc, char **argv) {
-  if (argc == 1) {
-    fputs("No filename given", stderr);
+  if (argc < 2) {
+    fputs("No filename given\n", stderr);
     return 1;
   }
+
   FILE *f = fopen(argv[1], "rb");
   if (!f) {
     fprintf(stderr, "Could not open file for reading: %s\n", argv[1]);
     return 1;
   }
-  size_t bufsz;
-  void *buf = read_full_file(f, &bufsz);
+
+  // Incremental hash
+  uint32_t hash_incremental = 0xFFFFFFFF;
+
+  // For one-shot hash, read entire file
+  if (fseek(f, 0, SEEK_END) != 0) {
+    fputs("Failed to seek file end\n", stderr);
+    fclose(f);
+    return 1;
+  }
+  long len = ftell(f);
+  if (len == -1L) {
+    fputs("Failed to get file size\n", stderr);
+    fclose(f);
+    return 1;
+  }
+  if (fseek(f, 0, SEEK_SET) != 0) {
+    fputs("Failed to seek file start\n", stderr);
+    fclose(f);
+    return 1;
+  }
+
+  void *full_buf = malloc((size_t)len);
+  if (!full_buf) {
+    fputs("Memory allocation failed\n", stderr);
+    fclose(f);
+    return 1;
+  }
+
+  size_t total_read = 0;
+  while (!feof(f)) {
+    uint8_t chunk[CHUNK_SIZE];
+    size_t n = fread(chunk, 1, CHUNK_SIZE, f);
+    if (n == 0 && ferror(f)) {
+      fputs("Error reading file\n", stderr);
+      free(full_buf);
+      fclose(f);
+      return 1;
+    }
+
+    // Incremental hash update
+    if (!clib2_crypto_crc32_update(chunk, n, hash_incremental,
+                                   &hash_incremental)) {
+      fputs("Incremental hash failed\n", stderr);
+      free(full_buf);
+      fclose(f);
+      return 1;
+    }
+
+    // Copy into full buffer for one-shot hash
+    if (total_read + n > (size_t)len) {
+      fputs("Read size mismatch\n", stderr);
+      free(full_buf);
+      fclose(f);
+      return 1;
+    }
+    memcpy((uint8_t *)full_buf + total_read, chunk, n);
+    total_read += n;
+  }
+
   fclose(f);
-  if (!buf) {
-    fputs("Could not read full file into memory", stderr);
+
+  // Compute full hash
+  uint32_t hash_full = 0;
+  if (!clib2_crypto_crc32_hash(full_buf, (size_t)len, &hash_full)) {
+    fputs("One-shot hash failed\n", stderr);
+    free(full_buf);
     return 1;
   }
-  uint32_t hash = 0xFFFFFFFF;
-  bool success = clib2_crypto_crc32_hash(buf, bufsz, &hash);
-  if (!success) {
-    fputs("Could not hash file", stderr);
-    free(buf);
+
+  printf("Incremental CRC32: 0x%08" PRIX32 "\n", hash_incremental);
+  printf("Full CRC32       : 0x%08" PRIX32 "\n", hash_full);
+
+  // Verify they match
+  if (hash_incremental != hash_full) {
+    fputs("Hashes do not match!\n", stderr);
+    free(full_buf);
     return 1;
   }
-  printf("CRC32 hash of file: 0x%08" PRIX32 "\n", hash);
-  free(buf);
+
+  free(full_buf);
   return 0;
 }

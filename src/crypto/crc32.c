@@ -50,11 +50,26 @@ bool clib2_crypto_crc32_hash(const void *restrict data, size_t len,
   if (!data || !out)
     return false;
 
-  const uint8_t *buf = (const uint8_t *)data;
   uint32_t crc = 0xFFFFFFFF;
 
-  for (size_t i = 0; i < len; ++i) {
-    uint8_t index = (crc ^ buf[i]) & 0xFF;
+  for (size_t i = 0; i < len; i++) {
+    uint8_t index = (crc ^ ((const uint8_t *)data)[i]) & 0xFF;
+    crc = (crc >> 8) ^ crc32_table[index];
+  }
+
+  *out = crc ^ 0xFFFFFFFF;
+  return true;
+}
+
+bool clib2_crypto_crc32_update(const void *restrict data, size_t len,
+                               uint32_t prev_crc32, uint32_t *out) {
+  if (!data || !out)
+    return false;
+
+  uint32_t crc = prev_crc32 ^ 0xFFFFFFFF;
+
+  for (size_t i = 0; i < len; i++) {
+    uint8_t index = (crc ^ ((const uint8_t *)data)[i]) & 0xFF;
     crc = (crc >> 8) ^ crc32_table[index];
   }
 
